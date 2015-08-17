@@ -76,15 +76,19 @@ function ding_debt_debts_form($form, &$form_state, $debts, $has_invoiced_fees, $
       '#value' => $debts,
     );
 
+    $loan_provider = ding_provider_get_provider_module_name('loan');
     $provider = ding_provider_get_provider_module_name('payment');
     if (!empty($provider)) {
-      $form['pay_selected'] = array(
-        '#type' => 'submit',
-        '#prefix' => '<div class="pay-button">',
-        '#value' => t('Pay selected debts'),
-        '#suffix' => '</div>',
-        '#submit' => array('ding_debt_debts_form_submit_pay_selected'),
-      );
+      // Integra only support payment of ALL debts in one go.
+      if ($loan_provider != 'openruth') {
+        $form['pay_selected'] = array(
+          '#type' => 'submit',
+          '#prefix' => '<div class="pay-button">',
+          '#value' => t('Pay selected debts'),
+          '#suffix' => '</div>',
+          '#submit' => array('ding_debt_debts_form_submit_pay_selected'),
+        );
+      }
 
       $form['pay_all'] = array(
         '#type' => 'submit',
